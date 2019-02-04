@@ -1,0 +1,8 @@
+{
+    "SESSION": {
+        "SAVE_TRACE": true,
+        "TIME_EXPIRATION": 3,
+        "ONLINE_TIME": 300
+    },
+    "DATABASE": {}
+}
