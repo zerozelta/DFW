@@ -65,6 +65,16 @@ class Database{
     }
 
     /**
+     * @param $query
+     * @param array $bindings
+     * @param bool $useReadPdo
+     * @return array
+     */
+    public function sQuery($sql, $bindings = []){
+        return $this->getConnection()->select($sql,$bindings);
+    }
+
+    /**
      * Run an update statement against the database.
      *
      * @param  string  $query

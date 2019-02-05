@@ -112,6 +112,21 @@ class DFW{
     }
 
     /**
+     * search in default config script for an entry
+     * @param $key
+     * @param null $defaultValue
+     * @return null|object|mixed
+     */
+    public static function cfg($key,$defaultValue = null){
+
+        if(DFW\ConfigManager::$GENERAL == null){
+            return $defaultValue;
+        }
+
+        return DFW\ConfigManager::$GENERAL->get($key,$defaultValue);
+    }
+
+    /**
      * @return bool
      */
     public static function isLogged(){
