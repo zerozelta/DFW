@@ -49,7 +49,7 @@ class SessionManager{
             $token = self::$session->token;
         }
 
-        if(self::$session== null || self::$session->token != $token || $_SERVER["HTTP_USER_AGENT"] != self::$session->agent){
+        if(self::$session== null || self::$session->token != $token){
             self::regenerateSession(); // Se crea un nuevo registro de sessión
         }
 
