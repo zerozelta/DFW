@@ -126,22 +126,25 @@ class SessionManager{
     /**
      * @return string new unique SID
      */
-    private static function generateSid(){
+    private static function generateToken(){
         return md5(UUID::v4());
     }
 
     /**
+     * Get the Token for this session
      * @return mixed
      */
-    public static function getSid(){
+    public static function getSessionToken(){
         return self::$session->getAttribute("token");
     }
 
     /**
      * Regenerate the session record on database with a new sid for the current connection
+     * @param int $time
+     * @return Session|null
      */
     private static function regenerateSession($time = 0){
-        $code = self::generateSid();
+        $code = self::generateToken();
         $ip = Utils::getClientIP();
         $agent = $_SERVER['HTTP_USER_AGENT'];
 

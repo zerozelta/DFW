@@ -7,4 +7,4 @@
  */
 
 include("core.php");
-exit("id: " . DFW\SessionManager::getSid());
+exit("id: " . DFW\SessionManager::getSessionToken());

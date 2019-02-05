@@ -11,18 +11,34 @@ namespace DFW;
 
 class SecurityManager{
 
+    /**
+     * @param $user
+     * @param $access
+     */
     public static function addAccessTo($user,$access){
 
     }
 
+    /**
+     * @param $user
+     * @param $access
+     */
     public static function removeAccessFrom($user,$access){
 
     }
 
+    /**
+     * @param $user
+     * @param $credential
+     */
     public static function addCredentialTo($user,$credential){
 
     }
 
+    /**
+     * @param $user
+     * @param $credential
+     */
     public static function removeCredentialFrom($user,$credential){
 
     }
