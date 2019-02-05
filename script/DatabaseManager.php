@@ -9,10 +9,11 @@ namespace DFW;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use DFW\ConfigManager;
+use DFW\Database;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Events\Dispatcher;
-use DFW\Database;
+
 
 class DatabaseManager{
 

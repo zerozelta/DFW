@@ -19,7 +19,7 @@ class ConfigManager{
     /**
      * @param string $config array|string|null
      */
-    public static function initialice($config = "general.php"){
+    public static function initialice($config = "general.json"){
         self::$GENERAL = new ConfigScript($config);
     }
 }

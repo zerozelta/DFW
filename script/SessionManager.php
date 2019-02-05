@@ -8,6 +8,8 @@
 
 namespace DFW;
 
+use DFW\model\Session;
+use DFW\model\User;
 use DFW\Utils;
 use DFW\ConfigManager;
 use DFW\DatabaseManager;
@@ -19,7 +21,7 @@ class SessionManager{
     public static $stk; // Nombre de la cookie STK
 
     /**
-     * @var \DFW\session\Session
+     * @var \DFW\model\Session
      */
     private static $session;
 
@@ -129,6 +131,13 @@ class SessionManager{
     }
 
     /**
+     * @return mixed
+     */
+    public static function getSid(){
+        return self::$session->getAttribute("token");
+    }
+
+    /**
      * Regenerate the session record on database with a new sid for the current connection
      */
     private static function regenerateSession($time = 0){
@@ -175,6 +184,6 @@ class SessionManager{
      * Clean the expired sessions
      */
     private static function swept(){
-        // PENDIENTE
+        DatabaseManager::get()->getConnection()->delete("DELETE FROM dfw_sessions WHERE :now > dfw_sessions.expire",["now" => Date("Y-m-d h-i",time())]);
     }
 }

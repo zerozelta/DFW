@@ -20,7 +20,7 @@ $DFW_PATH 	= strtolower(str_replace("\\","/",$DFW_PATH));
 if(substr($DFW_PATH,0,1) == "/"){ $DFW_PATH = substr($DFW_PATH,1); }
 if($DFW_PATH == ""){ $DFW_PATH = "."; }
 
-$DFW_DIR 		= pathinfo($DFW_PATH)["dirname"];											    // zephyra
+$DFW_DIR 		= pathinfo($DFW_PATH)["dirname"];											    // scefira
 
 define("DFW_HOST",$DFW_HOST);
 define("DFW_ROOT",$DFW_ROOT);

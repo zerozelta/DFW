@@ -20,7 +20,7 @@ class DFW{
     /**
      * initialice module config
      */
-    public static function initialiceConfigSystem($config = "general.php"){
+    public static function initialiceConfigSystem($config = "general.json"){
         ConfigManager::initialice($config);
     }
 
@@ -62,6 +62,13 @@ class DFW{
         if (substr($className, 0, 4) == "DFW\\") { // IS DFW classes
             $path = substr($className, 4, strlen($className));
             include_once(DFW_ROOT . "/script/" . $path . ".php");
+        }else{
+            $path = DFW_ROOT_DIR . "/lib/" . $className . ".php";
+            $path = str_replace("\\","/",$path);
+
+            if(file_exists($path)){
+                include($path);
+            }
         }
     }
 
@@ -98,10 +105,10 @@ class DFW{
 
     /**
      * @param $userIdentifier
-     * @return DFW\session\User|null
+     * @return DFW\model\User|null
      */
     public static function USER($userIdentifier){
-        return DFW\session\User::getUser($userIdentifier);
+        return DFW\model\User::getUser($userIdentifier);
     }
 
     /**
@@ -114,6 +121,5 @@ class DFW{
 }
 
 
-spl_autoload_register('DFW\System::autoload');
-register_shutdown_function ('DFW\System::
-');
+spl_autoload_register('DFW::autoload');
+register_shutdown_function ('DFW::finalize');
