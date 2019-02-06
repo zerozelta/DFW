@@ -63,7 +63,7 @@ class DFW{
             $path = substr($className, 4, strlen($className));
             include_once(DFW_ROOT . "/script/" . $path . ".php");
         }else{
-            $path = DFW_ROOT_DIR . "/lib/" . $className . ".php";
+            $path = DFW_ROOT . "/lib/" . $className . ".php";
             $path = str_replace("\\","/",$path);
 
             if(file_exists($path)){
@@ -135,6 +135,7 @@ class DFW{
 
 }
 
-
 spl_autoload_register('DFW::autoload');
 register_shutdown_function ('DFW::finalize');
+
+include (DFW_ROOT . "/lib/Illuminate/Support/helpers.php"); // Helpers de illumminate

@@ -49,7 +49,6 @@ class User extends Model {
         }
     }
 
-
     /**
      * @param $access array|string|Access|integer
      * @return bool verdadero o falso si exite el acceso
@@ -98,8 +97,7 @@ class User extends Model {
                         return true;
                     }
                 }else{
-                    $c = Credential::getCredential($cred);
-                    if($c != null && $c->id == $credential->id){
+                    if($credential != null && $cred->name == $credential){
                         return true;
                     }
                 }
