@@ -206,4 +206,22 @@ class Utils{
 
         return $string;
     }
+
+    /**
+     * @param $text
+     * @param string $key
+     * @return string
+     */
+    public static function encrypt($text,$key){
+        return openssl_encrypt ($text, "aes128", $key);
+    }
+
+    /**
+     * @param $cryptext
+     * @param string $key
+     * @return string
+     */
+    public static function decrypt($cryptext,$key){
+        return openssl_encrypt ($cryptext, "aes128", $key);
+    }
 }

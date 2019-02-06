@@ -143,14 +143,22 @@ class DFW{
     public static function makeJSON($status,$arrayObj = null,$debug = false){
         if($arrayObj == null){ $arrayObj = array(); }
 
-        if(is_bool($status)){
-            if($status){$status = "success"; }else{ $status = "error"; }
+        if(is_bool($status)){ // Si es bool el status se toma como success o error respectivamente
+            if($status){
+                $status = "success";
+            }else{
+                $status = "error";
+            }
+        }else if(is_array($status)){
+            $status = true;
+            $arrayObj = $status;
         }
 
         $arrayObj = array_merge(self::$jsonQueue,$arrayObj);    // Añadimos los registros en cola
 
-        if(isset($_POST["_debug"]) || $debug === true){
+        if($debug === true){
             if(isset($arrayObj["_debug"]) == false){ $arrayObj["_debug"] = []; }
+
             $arrayObj["_debug"] = array_merge($arrayObj["_debug"],array(
                 "loadTime" => number_format(((microtime(true) - DFW_TIME_START) * 1000)),
                 "SQL" => DFW\DatabaseManager::getQueryDebubLog(),
@@ -158,6 +166,8 @@ class DFW{
         }
 
         $arrayObj["status"]  = $status;
+
+        header('Content-Type: application/json');
         exit(json_encode($arrayObj)); // Finalizamos la ejecución del script
     }
 
