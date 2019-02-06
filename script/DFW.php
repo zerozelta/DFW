@@ -16,6 +16,7 @@ use DFW\SessionManager;
 class DFW{
 
     private static $exitCallbacks = array();
+    private static $jsonQueue = []; // JSON Object queue for makeJSON
 
     /**
      * initialice module config
@@ -131,6 +132,50 @@ class DFW{
      */
     public static function isLogged(){
         return DFW\SessionManager::isLogged();
+    }
+
+    /**
+     * Estandarización del empaquetado de objetos JSON de salida para cinder
+     * Finaliza la ejecución del script
+     * @param $status string estado de la peticion "success" para una ejecución exitosa | cualquier otro valor en aso contrario
+     * @param $arrayObj array array asociativo que contiene los datos del JSON a ser representado
+     */
+    public static function makeJSON($status,$arrayObj = null,$debug = false){
+        if($arrayObj == null){ $arrayObj = array(); }
+
+        if(is_bool($status)){
+            if($status){$status = "success"; }else{ $status = "error"; }
+        }
+
+        $arrayObj = array_merge(self::$jsonQueue,$arrayObj);    // Añadimos los registros en cola
+
+        if(isset($_POST["_debug"]) || $debug === true){
+            if(isset($arrayObj["_debug"]) == false){ $arrayObj["_debug"] = []; }
+            $arrayObj["_debug"] = array_merge($arrayObj["_debug"],array(
+                "loadTime" => number_format(((microtime(true) - DFW_TIME_START) * 1000)),
+                "SQL" => DFW\DatabaseManager::getQueryDebubLog(),
+            ));
+        }
+
+        $arrayObj["status"]  = $status;
+        exit(json_encode($arrayObj)); // Finalizamos la ejecución del script
+    }
+
+    /**
+     * Añade campos al JSON final pero sin terminar la ejecución, estos datos se apilan y los campos con el mismo nombre
+     * se sobreescriben dando preferencia al ultimo campo seteado con addJSON
+     * @param $spaceName string Nombre del campo al que será integrado el campo
+     * @param array $jsonArray array
+     */
+    public static function addJSON($spaceName,$jsonArray = []){
+        if(!isset(self::$jsonQueue[$spaceName])){
+            self::$jsonQueue[$spaceName] = [];
+        }
+        if(is_array($jsonArray)){
+            self::$jsonQueue[$spaceName] = array_merge(self::$jsonQueue[$spaceName],$jsonArray);
+        }else{
+            self::$jsonQueue[$spaceName] = $jsonArray;
+        }
     }
 
 }
