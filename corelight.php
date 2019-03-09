@@ -28,6 +28,4 @@ define("DFW_ROOT_DIR",$DFW_ROOT_DIR);
 define("DFW_PATH",$DFW_PATH);
 define("DFW_DIR",$DFW_DIR);
 
-require_once(DFW_ROOT . "/script/dfw.php");                                     // DFW System (includes an DFW autoloader )
-//require_once(DFW_ROOT . "/lib/illuminate/database/vendor/autoload.php");     // Modulo de base de datos Illuminate/Elocuent
-?>
+require_once(DFW_ROOT . "/script/DFW.php");                                     // DFW System (includes an DFW autoloader )

@@ -139,6 +139,14 @@ class SessionManager{
     }
 
     /**
+     * Get the Token for this session
+     * @return mixed
+     */
+    public static function getSessionId(){
+        return self::$session->getAttribute("id");
+    }
+
+    /**
      * Regenerate the session record on database with a new sid for the current connection
      * @param int $time
      * @return Session|null
@@ -174,12 +182,14 @@ class SessionManager{
      * @param bool $httponly
      * @return bool
      */
-    public static function setCookie($name,$value,$time = 0,$secure = false,$httponly = true){
+    public static function setCookie($name,$value,$time = 0,$secure = false,$httponly = false){
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         if($time > 0){
             $time = time() + $time;
         }
-        return setcookie($name,$value,$time,"/",$domain,$secure,$httponly);
+
+        $domain = $_SERVER['HTTP_HOST'];
+        return setcookie($name,$value,$time);
     }
 
 

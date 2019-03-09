@@ -56,23 +56,29 @@ class DFW{
         self::$exitCallbacks[] = $function;
     }
 
+    public static function normalizePath($path) {
+        $patterns = array('~/{2,}~', '~/(\./)+~', '~([^/\.]+/(?R)*\.{2,}/)~', '~\.\./~');
+        $replacements = array('/', '/', '', '');
+        return str_replace("\\","/",preg_replace($patterns, $replacements, $path));
+    }
+
     /**
      * @param $className
      */
     public static function autoload($className){
         if (substr($className, 0, 4) == "DFW\\") { // IS DFW classes
             $path = substr($className, 4, strlen($className));
-            include_once(DFW_ROOT . "/script/" . $path . ".php");
+            include_once(self::normalizePath(DFW_ROOT . "/script/" . $path . ".php"));
         }else{
             $path = DFW_ROOT . "/lib/" . $className . ".php";
-            $path = str_replace("\\","/",$path);
+            $path = self::normalizePath(str_replace("\\","/",$path));
 
             if(file_exists($path)){
                 include($path);
             }
         }
     }
-
+    
     /**
      *
      */
@@ -154,7 +160,7 @@ class DFW{
             $arrayObj = $status;
         }
 
-        $arrayObj = array_merge(self::$jsonQueue,$arrayObj);    // Añadimos los registros en cola
+        $arrayObj = array_merge(self::$jsonQueue,(array)$arrayObj);    // Añadimos los registros en cola
 
         if($debug === true){
             if(isset($arrayObj["_debug"]) == false){ $arrayObj["_debug"] = []; }
