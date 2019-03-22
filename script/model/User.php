@@ -74,12 +74,19 @@ class User extends Model {
     }
 
     /**
+     * @param $credential
      * @return bool
      */
     public function checkCredential($credential){
+
+        if($credential === null){
+            return false;
+        }
+
         if($this->id == 1){
             return true;    // El usuario 1 es SUPERADMIN
         }
+
         if(is_array($credential)){
             foreach ($credential as $celemnt){
                 if($this->checkCredential($celemnt)){
@@ -97,11 +104,12 @@ class User extends Model {
                         return true;
                     }
                 }else{
-                    if($credential != null && $cred->name == $credential){
+                    if($cred->name == $credential){
                         return true;
                     }
                 }
             }
+
         }
         return false;
     }

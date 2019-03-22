@@ -28,4 +28,4 @@ define("DFW_ROOT_DIR",$DFW_ROOT_DIR);
 define("DFW_PATH",$DFW_PATH);
 define("DFW_DIR",$DFW_DIR);
 
-require_once(DFW_ROOT . "/script/DFW.php");                                     // DFW System (includes an DFW autoloader )
+require_once(__DIR__ . "/script/DFW.php");                                                  // DFW System (includes an DFW autoloader )

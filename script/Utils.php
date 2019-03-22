@@ -187,7 +187,11 @@ class Utils{
      * @return Boolean Verdadero o falso si se encuentran seteados TODOS los valores dentro del array
      */
     public static function isDataSet($array,$values){
-        $aval = explode(",",$values);
+        $aval = $values;
+        if(is_string($values)){
+            $aval = explode(",",$values);
+        }
+
         for($i = 0;$i < count($aval) ; $i++){
             $v = ($aval[$i]);
             if(!isset($array["{$v}"])){

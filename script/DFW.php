@@ -78,7 +78,7 @@ class DFW{
             }
         }
     }
-    
+
     /**
      *
      */
@@ -144,10 +144,10 @@ class DFW{
      * Estandarización del empaquetado de objetos JSON de salida para cinder
      * Finaliza la ejecución del script
      * @param $status string estado de la peticion "success" para una ejecución exitosa | cualquier otro valor en aso contrario
-     * @param $arrayObj array array asociativo que contiene los datos del JSON a ser representado
+     * @param $obj array array asociativo que contiene los datos del JSON a ser representado
      */
-    public static function makeJSON($status,$arrayObj = null,$debug = false){
-        if($arrayObj == null){ $arrayObj = array(); }
+    public static function makeJSON($status, $obj = null, $debug = false){
+        if($obj == null){ $obj = array(); }
 
         if(is_bool($status)){ // Si es bool el status se toma como success o error respectivamente
             if($status){
@@ -157,24 +157,24 @@ class DFW{
             }
         }else if(is_array($status)){
             $status = true;
-            $arrayObj = $status;
+            $obj = $status;
         }
 
-        $arrayObj = array_merge(self::$jsonQueue,(array)$arrayObj);    // Añadimos los registros en cola
+        $obj = array_merge(self::$jsonQueue,(array)$obj);    // Añadimos los registros en cola
 
         if($debug === true){
-            if(isset($arrayObj["_debug"]) == false){ $arrayObj["_debug"] = []; }
+            if(isset($obj["_debug"]) == false){ $obj["_debug"] = []; }
 
-            $arrayObj["_debug"] = array_merge($arrayObj["_debug"],array(
+            $obj["_debug"] = array_merge($obj["_debug"],array(
                 "loadTime" => number_format(((microtime(true) - DFW_TIME_START) * 1000)),
                 "SQL" => DFW\DatabaseManager::getQueryDebubLog(),
             ));
         }
 
-        $arrayObj["status"]  = $status;
+        $obj["status"]  = $status;
 
-        header('Content-Type: application/json');
-        exit(json_encode($arrayObj)); // Finalizamos la ejecución del script
+        header("Content-type: application/json; charset=utf-8");
+        exit(json_encode($obj,JSON_UNESCAPED_UNICODE)); // Finalizamos la ejecución del script
     }
 
     /**

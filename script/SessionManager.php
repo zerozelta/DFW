@@ -45,7 +45,7 @@ class SessionManager{
             self::$session = Session::find($_COOKIE[$sid]);
             $token = $_COOKIE[$stk];
         }else{
-            self::$session = self::regenerateSession(); // Se crea un nuevo registro de sessión
+            self::regenerateSession(); // Se crea un nuevo registro de sessión
             $token = self::$session->token;
         }
 
@@ -69,7 +69,7 @@ class SessionManager{
      * @return bool
      */
     public static function isLogged(){
-        return self::$session != null && self::$session->idUser != null && self::$session->idUser != 0;
+        return self::$session !== null && self::$session->idUser !== null && self::$session->idUser !== 0;
     }
 
     public static function getUser(){
@@ -189,7 +189,7 @@ class SessionManager{
         }
 
         $domain = $_SERVER['HTTP_HOST'];
-        return setcookie($name,$value,$time);
+        return setcookie($name,$value,$time,"/");
     }
 
 

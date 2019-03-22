@@ -95,23 +95,21 @@ class SecurityManager{
             switch($bind->index){
                 case self::RULE_LOGGED_SESSION:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "this action require a logged user"; }
-                    if(DFW::isLogged() != $bind->values){
+                    if(DFW::isLogged() !== $bind->values){
                         DFW::makeJSON("error-access-denied",["error-description" => $bind->errorMessage]);
                     }
                     break;
                 }
                 case self::RULE_ACCESS:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "you don't have the required access"; }
-                    $values = explode(",",$bind->values);
-                    if(DFW::isLogged() == false || DFW::SESSION_USER()->checkAccess($values) == false){
+                    if(DFW::isLogged() == false || DFW::SESSION_USER()->checkAccess($bind->values) == false){
                         DFW::makeJSON("error-access-denied",array("error-description" => $bind->errorMessage));
                     }
                     break;
                 }
                 case self::RULE_CREDENTIAL:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "you don't have the required credential"; }
-                    $values = explode(",",$bind->values);
-                    if(DFW::isLogged() == false || DFW::SESSION_USER()->checkCredential($values)) {
+                    if(DFW::isLogged() == false || DFW::SESSION_USER()->checkCredential($bind->values) == false) {
                         DFW::makeJSON("error-access-denied",array("error-description" => $bind->errorMessage));
                     }
                     break;
@@ -174,7 +172,13 @@ class  ErrorBind{
 
     public function __construct($index,$values,$errorMessage){
         $this->index = $index;
-        $this->values = $values;
+
+        if(is_string($values)){
+            $this->values = explode(",",$values);
+        }else{
+            $this->values = $values;
+        }
+
         $this->errorMessage = $errorMessage;
     }
 }
