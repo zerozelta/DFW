@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zerozelta
+ * dfw_user: zerozelta
  * Date: 31/07/2018
  * Time: 07:49 PM
  */
@@ -22,6 +22,11 @@ class SecurityManager{
      * @var ErrorBind[]
      */
     private static $securityRules = array(); // Listado de las actuales reglas de seguridad
+
+    /**
+     * @var callable[]
+     */
+    private static $securityBreakCallbacks = array(); // Listado de las actuales reglas de seguridad
 
     /**
      * @param $user
@@ -85,7 +90,11 @@ class SecurityManager{
             self::bind($index,$values,$errorMessage);
         }
 
-        for($i = 0;$i < count(self::$securityRules);$i++){
+        $status = "success";
+        $description = "";
+        $bindBroken = null;
+
+        for($i = 0;$i < count(self::$securityRules) && $status === "success" ;$i++){
             $bind = &self::$securityRules[$i];
 
             if($bind->checked == true){
@@ -96,6 +105,9 @@ class SecurityManager{
                 case self::RULE_LOGGED_SESSION:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "this action require a logged user"; }
                     if(DFW::isLogged() !== $bind->values){
+                        $status = "error-access-denied";
+                        $description = $bind->errorMessage;
+                        $bindBroken = $bind;
                         DFW::makeJSON("error-access-denied",["error-description" => $bind->errorMessage]);
                     }
                     break;
@@ -103,6 +115,9 @@ class SecurityManager{
                 case self::RULE_ACCESS:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "you don't have the required access"; }
                     if(DFW::isLogged() == false || DFW::SESSION_USER()->checkAccess($bind->values) == false){
+                        $status = "error-access-denied";
+                        $description = $bind->errorMessage;
+                        $bindBroken = $bind;
                         DFW::makeJSON("error-access-denied",array("error-description" => $bind->errorMessage));
                     }
                     break;
@@ -110,6 +125,9 @@ class SecurityManager{
                 case self::RULE_CREDENTIAL:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "you don't have the required credential"; }
                     if(DFW::isLogged() == false || DFW::SESSION_USER()->checkCredential($bind->values) == false) {
+                        $status = "error-access-denied";
+                        $description = $bind->errorMessage;
+                        $bindBroken = $bind;
                         DFW::makeJSON("error-access-denied",array("error-description" => $bind->errorMessage));
                     }
                     break;
@@ -117,6 +135,9 @@ class SecurityManager{
                 case self::RULE_POST_VARS_SETTED:{
                     if($bind->errorMessage == null){ $bind->errorMessage = "undefined POST vars required"; }
                     if(!DFW\Utils::isDataSet($_POST,$bind->values)){
+                        $status = "error-access-denied";
+                        $description = $bind->errorMessage;
+                        $bindBroken = $bind;
                         DFW::makeJSON("error-access-denied",array("error-description" => $bind->errorMessage , "post-vars-required" => $bind->values));
                     }
                     break;
@@ -125,6 +146,20 @@ class SecurityManager{
 
             $bind->checked = true;
         }
+
+        if($status !== "success"){
+            foreach (self::$securityBreakCallbacks as $callback){
+                $callback($status,$description,$bindBroken);
+            }
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+    public static function addSecurityBreakCallback($function){
+        self::$securityBreakCallbacks[] = $function;
     }
 
     /**

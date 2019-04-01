@@ -1,6 +1,6 @@
 <?php
 /**
- * User: zerozelta
+ * dfw_user: zerozelta
  * Date: 02/08/2018
  * Time: 03:35 PM
  */
@@ -112,10 +112,10 @@ class DFW{
 
     /**
      * @param $userIdentifier
-     * @return DFW\model\User|null
+     * @return DFW\model\dfw_user|null
      */
     public static function USER($userIdentifier){
-        return DFW\model\User::getUser($userIdentifier);
+        return DFW\model\dfw_user::getUser($userIdentifier);
     }
 
     /**
@@ -172,6 +172,16 @@ class DFW{
         }
 
         $obj["status"]  = $status;
+
+        /// Headers
+
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+
+        if($status === "success"){
+            header($protocol . ' 200 OK');
+        }else{
+            header($protocol . ' 400 ' . $status);
+        }
 
         header("Content-type: application/json; charset=utf-8");
         exit(json_encode($obj,JSON_UNESCAPED_UNICODE)); // Finalizamos la ejecución del script

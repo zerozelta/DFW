@@ -1,15 +1,15 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: zerozelta
+ * dfw_user: zerozelta
  * Date: 28/07/2018
  * Time: 09:21 AM
  */
 
 namespace DFW;
 
-use DFW\model\Session;
-use DFW\model\User;
+use DFW\model\dfw_session;
+use DFW\model\dfw_user;
 use DFW\Utils;
 use DFW\ConfigManager;
 use DFW\DatabaseManager;
@@ -21,12 +21,12 @@ class SessionManager{
     public static $stk; // Nombre de la cookie STK
 
     /**
-     * @var \DFW\model\Session
+     * @var \DFW\model\dfw_session
      */
     private static $session;
 
     /**
-     * @var User
+     * @var dfw_user
      */
     private static $sessionUser;
 
@@ -42,7 +42,7 @@ class SessionManager{
         $code = null;
         $token = null;
         if(isset($_COOKIE[$sid]) && isset($_COOKIE[$stk]) && is_numeric($_COOKIE[$sid])){
-            self::$session = Session::find($_COOKIE[$sid]);
+            self::$session = dfw_session::find($_COOKIE[$sid]);
             $token = $_COOKIE[$stk];
         }else{
             self::regenerateSession(); // Se crea un nuevo registro de sessión
@@ -78,7 +78,7 @@ class SessionManager{
         }
 
         if(self::$sessionUser == null){
-            self::$sessionUser = User::with("credentials.access")->where("id",self::$session->idUser)->first();
+            self::$sessionUser = dfw_user::with("credentials.access")->where("id",self::$session->idUser)->first();
         }
 
         return self::$sessionUser;
@@ -106,7 +106,7 @@ class SessionManager{
             return false;
         }
 
-        $user = User::getUser($userIdentifier,"credentials.access");
+        $user = dfw_user::getUser($userIdentifier,"credentials.access");
 
         if($user != null){
             if((($user->encodedKey == null || $user->encodedKey == "") && $password == "") || password_verify($password,$user->encodedKey)){
@@ -149,14 +149,14 @@ class SessionManager{
     /**
      * Regenerate the session record on database with a new sid for the current connection
      * @param int $time
-     * @return Session|null
+     * @return dfw_session|null
      */
     private static function regenerateSession($time = 0){
         $code = self::generateToken();
         $ip = Utils::getClientIP();
         $agent = $_SERVER['HTTP_USER_AGENT'];
 
-        $session = new Session([
+        $session = new dfw_session([
             'token' => $code,
             'agent' => $agent,
             'ip' => $ip,

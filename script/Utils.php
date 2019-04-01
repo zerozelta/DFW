@@ -1,6 +1,6 @@
 <?php
 /**
- * User: zerozelta
+ * dfw_user: zerozelta
  * Date: 26/07/2018
  * Time: 10:25 AM
  */
@@ -227,5 +227,39 @@ class Utils{
      */
     public static function decrypt($cryptext,$key){
         return openssl_encrypt ($cryptext, "aes128", $key);
+    }
+
+    /**
+     * @param $text
+     * @param bool $strip_tags
+     * @return string
+     */
+    public static function sanitize($text,$strip_tags = true){
+        if($strip_tags){ $text = strip_tags($text); }
+        $text = trim($text);
+
+        return $text;
+    }
+
+    /**
+     * @param $array
+     * @param bool $strip_tags
+     * @return array
+     */
+    public static function sanitizeAll($array,$strip_tags = true){
+        $res = [];
+        foreach ($array as $text){
+            $res[] = self::sanitize($text,$strip_tags);
+        }
+        return $res;
+    }
+
+    /**
+     * @param $text
+     * @param string $delimiter
+     * @return string
+     */
+    public static function toSlug($text,$delimiter = "-"){
+        return strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $text))))), $delimiter));
     }
 }
