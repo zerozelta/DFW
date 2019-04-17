@@ -236,6 +236,7 @@ class Utils{
      */
     public static function sanitize($text,$strip_tags = true){
         if($strip_tags){ $text = strip_tags($text); }
+
         $text = trim($text);
 
         return $text;
@@ -244,13 +245,21 @@ class Utils{
     /**
      * @param $array
      * @param bool $strip_tags
-     * @return array
      */
     public static function sanitizeAll($array,$strip_tags = true){
-        $res = [];
-        foreach ($array as $text){
-            $res[] = self::sanitize($text,$strip_tags);
+        $res = array();
+        $keys = array_keys($array);
+
+        foreach ($keys as $key){
+            $item = $array[$key];
+
+            if(is_string($item)){
+                $res[$key] = self::sanitize($item,$strip_tags);
+            }else{
+                $res[$key] = $item;
+            }
         }
+
         return $res;
     }
 
@@ -261,5 +270,30 @@ class Utils{
      */
     public static function toSlug($text,$delimiter = "-"){
         return strtolower(trim(preg_replace('/[\s-]+/', $delimiter, preg_replace('/[^A-Za-z0-9-]+/', $delimiter, preg_replace('/[&]/', 'and', preg_replace('/[\']/', '', iconv('UTF-8', 'ASCII//TRANSLIT', $text))))), $delimiter));
+    }
+
+
+    /**
+     * @param $input
+     * @return string
+     */
+    public static function UTF8(&$input){
+        if (is_string($input)) {
+            $input = utf8_encode($input);
+        } else if (is_array($input)) {
+            foreach ($input as &$value) {
+                self::UTF8($value);
+            }
+
+            unset($value);
+        } else if (is_object($input)) {
+            $vars = array_keys(get_object_vars($input));
+
+            foreach ($vars as $var) {
+                self::UTF8($input->$var);
+            }
+        }
+
+        return $input;
     }
 }

@@ -147,7 +147,7 @@ class DFW{
      * @param $obj array array asociativo que contiene los datos del JSON a ser representado
      */
     public static function makeJSON($status, $obj = null, $debug = false){
-        if($obj == null){ $obj = array(); }
+        if($obj === null){ $obj = []; }
 
         if(is_bool($status)){ // Si es bool el status se toma como success o error respectivamente
             if($status){
